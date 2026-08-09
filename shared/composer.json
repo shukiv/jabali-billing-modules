@@ -1,0 +1,16 @@
+{
+    "name": "jabali/integration-shared",
+    "description": "Shared Jabali Panel Automation API client for the WHMCS / Blesta / WiseCP modules",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.4",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    },
+    "scripts": {
+        "test": "phpunit --colors=always tests"
+    }
+}

@@ -1,0 +1,34 @@
+{
+    "version": "0.1.0",
+    "name": "Jabali.name",
+    "description": "Jabali.description",
+    "authors": [
+        {
+            "name": "Jabali Panel",
+            "url": "https://jabali-panel.com"
+        }
+    ],
+    "package": {
+        "name_key": "jabali_domain"
+    },
+    "service": {
+        "name_key": "jabali_domain"
+    },
+    "module": {
+        "row": "Jabali.module_row",
+        "rows": "Jabali.module_row_plural",
+        "row_key": "server_name",
+        "group": "Jabali.module_group"
+    },
+    "email_tags": {
+        "module": ["host_name"],
+        "package": ["package_id"],
+        "service": [
+            "jabali_username",
+            "jabali_password",
+            "jabali_domain",
+            "jabali_email",
+            "jabali_user_id"
+        ]
+    }
+}

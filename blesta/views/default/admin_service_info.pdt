@@ -1,0 +1,17 @@
+        <table class="table">
+            <tr class="heading_row">
+                <td><?php $this->_('Jabali.service_info.username');?></td>
+                <td><?php $this->_('Jabali.service_info.domain');?></td>
+                <td class="last"><?php $this->_('Jabali.service_info.panel_url');?></td>
+            </tr>
+            <tr>
+                <td><?php echo (isset($service_fields->jabali_username) ? $this->Html->safe($service_fields->jabali_username) : null);?></td>
+                <td><?php echo (isset($service_fields->jabali_domain) ? $this->Html->safe($service_fields->jabali_domain) : null);?></td>
+                <td>
+                    <?php
+                    $panel_url = 'https://' . (isset($module_row->meta->host_name) ? $module_row->meta->host_name : '') . ':' . (isset($module_row->meta->port) ? $module_row->meta->port : '8443') . '/jabali-panel';
+                    ?>
+                    <a href="<?php echo $this->Html->safe($panel_url);?>" target="_blank" rel="noopener"><?php echo $this->Html->safe($panel_url);?></a>
+                </td>
+            </tr>
+        </table>

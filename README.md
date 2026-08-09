@@ -26,7 +26,6 @@ shared/      Canonical HMAC API client + unit tests (signing vectors locked)
 whmcs/       WHMCS server module (vendors the shared client)
 blesta/      Blesta module   (vendors the shared client)
 wisecp/      WiseCP ServerModule (vendors the shared client)
-docs/        API contract, operator runbook
 tools/       Live smoke harness
 ```
 
@@ -63,4 +62,4 @@ operator and scoped (`read:*` / `write:users` / `delete:users`).
 
 ## License
 
-Proprietary — © Jabali. All rights reserved.
+[AGPL-3.0](LICENSE) — © Jabali. Same license as Jabali Panel.

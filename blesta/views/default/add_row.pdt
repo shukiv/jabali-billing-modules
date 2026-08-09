@@ -1,0 +1,69 @@
+        <?php
+        $this->Widget->clear();
+        $this->Widget->setLinkButtons([]);
+        $this->Widget->create($this->_('Jabali.add_row.box_title', true));
+        ?>
+        <div class="inner">
+            <?php
+            $this->Form->create(null, ['id' => 'add_row']);
+            ?>
+            <div class="title_row first">
+                <h3><?php $this->_('Jabali.add_row.basic_title');?></h3>
+            </div>
+            <div class="pad">
+                <ul>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_('Jabali.row_meta.server_name', true), 'server_name');
+                        $this->Form->fieldText('server_name', (isset($vars->server_name) ? $vars->server_name : null));
+                        ?>
+                    </li>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_('Jabali.row_meta.host_name', true), 'host_name');
+                        $this->Form->fieldText('host_name', (isset($vars->host_name) ? $vars->host_name : null));
+                        ?>
+                    </li>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_('Jabali.row_meta.port', true), 'port');
+                        $this->Form->fieldText('port', (isset($vars->port) ? $vars->port : $this->_('Jabali.row_meta.default_port', true)));
+                        ?>
+                    </li>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_('Jabali.row_meta.token_id', true), 'token_id');
+                        $this->Form->fieldText('token_id', (isset($vars->token_id) ? $vars->token_id : null));
+                        ?>
+                    </li>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_('Jabali.row_meta.token_secret', true), 'token_secret');
+                        $this->Form->fieldPassword('token_secret', ['value' => (isset($vars->token_secret) ? $vars->token_secret : null)]);
+                        ?>
+                    </li>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_('Jabali.row_meta.account_limit', true), 'account_limit');
+                        $this->Form->fieldText('account_limit', (isset($vars->account_limit) ? $vars->account_limit : null));
+                        ?>
+                    </li>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_('Jabali.row_meta.notes', true), 'notes');
+                        $this->Form->fieldTextarea('notes', (isset($vars->notes) ? $vars->notes : null));
+                        ?>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="button_row">
+                <?php
+                $this->Form->fieldSubmit('add_row', $this->_('Jabali.add_row.add_btn', true), ['class' => 'btn btn-primary pull-right']);
+                $this->Form->end();
+                ?>
+            </div>
+        </div>
+        <?php
+        $this->Widget->end();
+        ?>

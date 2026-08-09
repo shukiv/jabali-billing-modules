@@ -1,0 +1,35 @@
+        <div class="panel-content">
+            <?php if (!empty($sso_supported)) { ?>
+            <h4><?php $this->_('Jabali.tab_client_actions.login');?></h4>
+            <?php
+            $this->Form->create();
+            $this->Form->fieldHidden('action', 'panel_login');
+            $this->Form->fieldSubmit('login', $this->_('Jabali.tab_client_actions.login_submit', true), ['class' => 'btn btn-primary']);
+            $this->Form->end();
+            ?>
+            <hr />
+            <?php } elseif (!empty($panel_url)) { ?>
+            <h4><?php $this->_('Jabali.tab_client_actions.login');?></h4>
+            <p>
+                <a href="<?php echo $this->Html->safe($panel_url);?>" target="_blank" rel="noopener" class="btn btn-primary">
+                    <?php $this->_('Jabali.tab_client_actions.login_submit');?>
+                </a>
+            </p>
+            <hr />
+            <?php } ?>
+
+            <h4><?php $this->_('Jabali.tab_client_actions.change_password');?></h4>
+            <?php
+            $this->Form->create();
+            ?>
+            <div class="form-group">
+                <?php
+                $this->Form->label($this->_('Jabali.tab_client_actions.field_password', true), 'jabali_password');
+                $this->Form->fieldPassword('jabali_password', ['class' => 'form-control', 'id' => 'jabali_password']);
+                ?>
+            </div>
+            <?php
+            $this->Form->fieldSubmit('save', $this->_('Jabali.tab_client_actions.field_password_submit', true), ['class' => 'btn btn-primary']);
+            $this->Form->end();
+            ?>
+        </div>
