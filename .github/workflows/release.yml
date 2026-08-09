@@ -1,0 +1,50 @@
+name: release
+
+# Tag a module release as `<module>/vX.Y.Z`, e.g. `whmcs/v1.0.0`.
+# Produces a drift-checked, self-contained zip attached to a GitHub Release.
+on:
+  push:
+    tags:
+      - 'whmcs/v*'
+      - 'blesta/v*'
+      - 'wisecp/v*'
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and publish module zip
+        # GITHUB_REF_NAME is the tag, constrained by the trigger above.
+        # No ${{ }} interpolation inside run: (workflow-injection safe).
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          MODULE="${TAG%%/*}"
+          VERSION="${TAG##*/}"
+          case "$MODULE" in
+            whmcs)  LIB="whmcs/lib" ;;
+            blesta) LIB="blesta/apis/lib" ;;
+            wisecp) LIB="wisecp/lib" ;;
+            *) echo "::error::unexpected module '$MODULE'"; exit 1 ;;
+          esac
+          if ! printf '%s' "$VERSION" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+'; then
+            echo "::error::bad version '$VERSION' (want vX.Y.Z)"; exit 1
+          fi
+
+          # Drift gate: the shipped copy must equal the canonical client.
+          diff -u "shared/src/JabaliApiClient.php"    "$LIB/JabaliApiClient.php"
+          diff -u "shared/src/JabaliApiException.php" "$LIB/JabaliApiException.php"
+
+          NAME="jabali-${MODULE}-${VERSION}.zip"
+          zip -r "$NAME" "$MODULE" -x '*/.git*'
+
+          gh release create "$TAG" "$NAME" \
+            --title "${MODULE} ${VERSION}" \
+            --notes "Drop-in ${MODULE} module for Jabali Panel. Unzip into your billing system's modules directory (see README)."

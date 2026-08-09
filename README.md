@@ -1,5 +1,7 @@
 # Jabali Panel — Billing System Modules
 
+[![ci](https://github.com/shukiv/jabali-billing-modules/actions/workflows/ci.yml/badge.svg)](https://github.com/shukiv/jabali-billing-modules/actions/workflows/ci.yml)
+
 Provisioning modules that let **WHMCS**, **Blesta**, and **WiseCP** manage
 hosting accounts on **Jabali Panel** through its HMAC-signed Automation API —
 create, suspend/unsuspend, change password, change package, read usage,
@@ -26,11 +28,17 @@ shared/      Canonical HMAC API client + unit tests (signing vectors locked)
 whmcs/       WHMCS server module (vendors the shared client)
 blesta/      Blesta module   (vendors the shared client)
 wisecp/      WiseCP ServerModule (vendors the shared client)
+docs/        API contract + operator runbook
 tools/       Live smoke harness
 ```
 
 The shared client is the single source of truth; each module vendors a copy
 under its own `lib/`, kept in lockstep by a drift check.
+
+## Docs
+
+- [API contract](docs/API-CONTRACT.md) — wire protocol, operation matrix, identity semantics.
+- [Operator runbook](docs/OPERATOR-RUNBOOK.md) — mint a token, install each module, scopes, troubleshooting.
 
 ## Authentication
 

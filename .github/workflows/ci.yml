@@ -1,0 +1,34 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Versions
+        run: php -v && composer --version
+
+      - name: Lint all PHP sources
+        run: find shared whmcs blesta wisecp tools -name '*.php' -print0 | xargs -0 -n1 -P4 php -l
+
+      - name: Vendored clients match shared/src (drift check)
+        run: |
+          bash shared/sync.sh
+          if ! git diff --quiet -- whmcs blesta wisecp; then
+            echo "::error::A vendored lib/ client drifted from shared/src. Run shared/sync.sh and commit."
+            git --no-pager diff -- whmcs blesta wisecp
+            exit 1
+          fi
+          echo "All vendored clients match shared/src."
+
+      - name: Unit tests (signing vectors)
+        working-directory: shared
+        run: |
+          composer install --no-interaction --no-progress --prefer-dist
+          composer test
