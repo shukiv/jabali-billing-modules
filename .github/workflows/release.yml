@@ -28,10 +28,12 @@ jobs:
           set -euo pipefail
           MODULE="${TAG%%/*}"
           VERSION="${TAG##*/}"
+          # INSTALL_DIR = the exact folder name the module must live in
+          # inside the billing system, so the zip is a true drop-in.
           case "$MODULE" in
-            whmcs)  LIB="whmcs/lib" ;;
-            blesta) LIB="blesta/apis/lib" ;;
-            wisecp) LIB="wisecp/lib" ;;
+            whmcs)  LIB="whmcs/lib";       INSTALL_DIR="jabali" ;;   # modules/servers/jabali/
+            blesta) LIB="blesta/apis/lib"; INSTALL_DIR="jabali" ;;   # components/modules/jabali/
+            wisecp) LIB="wisecp/lib";      INSTALL_DIR="Jabali" ;;   # coremio/modules/Servers/Jabali/
             *) echo "::error::unexpected module '$MODULE'"; exit 1 ;;
           esac
           if ! printf '%s' "$VERSION" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+'; then
@@ -42,8 +44,12 @@ jobs:
           diff -u "shared/src/JabaliApiClient.php"    "$LIB/JabaliApiClient.php"
           diff -u "shared/src/JabaliApiException.php" "$LIB/JabaliApiException.php"
 
+          # Stage the module under its real install-dir name so the zip
+          # unzips straight into the billing system's modules directory.
           NAME="jabali-${MODULE}-${VERSION}.zip"
-          zip -r "$NAME" "$MODULE" -x '*/.git*'
+          rm -rf dist && mkdir -p "dist/${INSTALL_DIR}"
+          cp -a "${MODULE}/." "dist/${INSTALL_DIR}/"
+          ( cd dist && zip -r "../${NAME}" "${INSTALL_DIR}" -x '*/.git*' )
 
           gh release create "$TAG" "$NAME" \
             --title "${MODULE} ${VERSION}" \
