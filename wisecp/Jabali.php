@@ -92,6 +92,47 @@ class Jabali_Module extends ServerModule
         ];
     }
 
+    /**
+     * Packages offered by this Jabali server, for the product page's
+     * "Service Plan" selector.
+     *
+     * Every bundled WiseCP hosting module (cPanel, DirectAdmin, Plesk, …)
+     * exposes this method; WiseCP calls it to populate the dropdown and
+     * stores the chosen key in the product's module_data as "plan".
+     * Without it WiseCP renders no selector at all, leaving operators with
+     * no way to map a product to a package.
+     *
+     * Keyed by package ULID so the stored value is what the API expects.
+     */
+    public function getPlans()
+    {
+        if (!$this->requireApi()) {
+            return false;
+        }
+
+        try {
+            $packages = $this->api->listPackages();
+        } catch (Exception $e) {
+            $this->error = 'Could not read packages from Jabali Panel: ' . $e->getMessage();
+            return false;
+        }
+
+        $plans = [];
+        foreach ($packages as $package) {
+            if (!is_array($package)) {
+                continue;
+            }
+            $id = trim((string)($package['id'] ?? ''));
+            if ($id === '') {
+                continue;
+            }
+            $plans[$id] = $package;
+        }
+
+        // false (not []) tells WiseCP the list is unavailable rather than empty.
+        return $plans ?: false;
+    }
+
     public function generate_username($domain = '', $half_mixed = false)
     {
         // Keep in lockstep with the Blesta module's generateUsername()
@@ -235,8 +276,11 @@ class Jabali_Module extends ServerModule
         }
 
         $package_id = '';
-        if (!empty($product['module_data']['package_id'])) {
-            $package_id = trim((string)$product['module_data']['package_id']);
+        foreach (['plan', 'package_id'] as $key) {
+            if (!empty($product['module_data'][$key])) {
+                $package_id = trim((string)$product['module_data'][$key]);
+                break;
+            }
         }
         if ($package_id === '') {
             $this->error = 'The target product has no Jabali Package ID configured (product module settings).';
@@ -474,12 +518,21 @@ class Jabali_Module extends ServerModule
      */
     private function resolvePackageId(array $options)
     {
+        // "plan" is WiseCP's own key for the product's Service Plan selector
+        // (see getPlans()); "package_id" is the legacy free-text field kept
+        // working for installs configured before the selector existed.
         $candidates = [
+            $options['plan'] ?? null,
             $options['package_id'] ?? null,
+            $options['module_data']['plan'] ?? null,
             $options['module_data']['package_id'] ?? null,
+            $this->order['options']['plan'] ?? null,
             $this->order['options']['package_id'] ?? null,
+            $this->order['options']['module_data']['plan'] ?? null,
             $this->order['options']['module_data']['package_id'] ?? null,
+            $this->product['module_data']['plan'] ?? null,
             $this->product['module_data']['package_id'] ?? null,
+            $this->config['plan'] ?? null,
             $this->config['package_id'] ?? null,
         ];
         foreach ($candidates as $candidate) {
