@@ -440,21 +440,35 @@ class Jabali_Module extends ServerModule
 
     public function adminArea_service_fields()
     {
-        $c_info = $this->options['creation_info'] ?? [];
+        // Rendered by pages/order-detail.php — WiseCP does not call this hook
+        // itself. Prefill from options.config first (what create() stored),
+        // falling back to creation_info for hand-linked services.
+        $c_info = is_array($this->options['creation_info'] ?? null) ? $this->options['creation_info'] : [];
+        $config = is_array($this->options['config'] ?? null) ? $this->options['config'] : [];
+
+        $pick = function ($key) use ($config, $c_info) {
+            foreach ([$config, $c_info] as $src) {
+                if (!empty($src[$key])) {
+                    return (string)$src[$key];
+                }
+            }
+            return '';
+        };
 
         return [
             'username' => [
                 'wrap_width' => 100,
                 'name' => 'Panel Username',
                 'type' => 'text',
-                'value' => $c_info['username'] ?? '',
+                'value' => $pick('username'),
             ],
             'user_id' => [
                 'wrap_width' => 100,
                 'name' => 'Jabali User ID',
-                'description' => 'The 26-character ULID of the panel user this service maps to.',
+                'description' => 'The 26-character ULID of the panel user this service maps to. '
+                    . 'Required for panel single sign-on and usage reporting.',
                 'type' => 'text',
-                'value' => $c_info['user_id'] ?? '',
+                'value' => $pick('user_id'),
             ],
         ];
     }
