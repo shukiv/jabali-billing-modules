@@ -550,9 +550,20 @@ class Jabali_Module extends ServerModule
      */
     private function creationInfo($key)
     {
+        // Order matters. WiseCP copies the *product's* module_data into
+        // options.creation_info when the order is placed, then stores whatever
+        // create() returned into options.config once activation completes. The
+        // account we actually provisioned is therefore in options.config, and
+        // that has to win — creation_info describes the product, not the
+        // account. Reading only creation_info left username/domain blank in the
+        // client area and made userId() fail, breaking panel single sign-on.
         $sources = [
+            $this->order['options']['config'] ?? null,
+            $this->options['config'] ?? null,
             $this->options['creation_info'] ?? null,
             $this->order['options']['creation_info'] ?? null,
+            // Documented top-level service options, e.g. options["domain"].
+            $this->order['options'] ?? null,
         ];
         foreach ($sources as $info) {
             if (is_array($info) && isset($info[$key]) && $info[$key] !== '') {
