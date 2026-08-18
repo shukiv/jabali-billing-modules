@@ -13,7 +13,9 @@ Automation API (HMAC-signed; no admin password stored in Blesta).
    - `delete:users` (needed for cancellation)
 3. In Blesta: **Settings → Company → Modules → Available**, install
    *Jabali Panel*.
-4. **Add Server**: panel hostname, port (8443), automation token ID +
+4. **Add Server**: panel hostname, port (8443 — or `443` if your host blocks
+   outbound 8443 and the panel admin has enabled **Server API Access → "Also
+   serve the API on port 443"**), automation token ID +
    secret. Saving validates the connection live — a failure means wrong
    credentials, an unreachable panel, or clock skew (sync NTP).
 5. Create a package: pick the Jabali package from the dropdown (needs a

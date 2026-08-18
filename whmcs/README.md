@@ -15,7 +15,10 @@ Automation API (HMAC-signed; no admin password stored in WHMCS).
 3. In WHMCS: **System Settings → Servers → Add New Server**
    - Module: *Jabali Panel*
    - Hostname: panel hostname (e.g. `panel.example.com`)
-   - Port: `8443` (default)
+   - Port: `8443` (default). If your host's outbound firewall blocks 8443
+     (e.g. CSF's default `TCP_OUT`), the panel admin can turn on
+     **Server API Access → "Also serve the API on port 443"** in the panel
+     and you set this to `443` instead. 8443 stays the recommended default.
    - Username: the automation token **ID**
    - Password: the automation token **secret**
    - Click **Test Connection** — it reports the panel's advertised

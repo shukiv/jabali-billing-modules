@@ -17,7 +17,10 @@ Automation API (HMAC-signed; no admin password stored in WiseCP).
    - Name: the panel hostname (e.g. `panel.example.com`)
    - Username: the automation token **ID**
    - Password: the automation token **secret**
-   - Port: `8443`
+   - Port: `8443`. If your host's outbound firewall blocks 8443 (e.g. CSF's
+     default `TCP_OUT`), the panel admin can turn on **Server API Access →
+     "Also serve the API on port 443"** in the panel and you set this to `443`
+     instead. 8443 stays the recommended default.
    - Run **Test Connection**.
 4. On each hosting product, open module settings and set
    **Jabali Package ID** to the package ULID from
