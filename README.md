@@ -58,7 +58,10 @@ operator and scoped (`read:*` / `write:users` / `delete:users`).
 1. Copy the module folder into your billing system's module directory (see
    the table above).
 2. In the billing admin, add a Jabali **Server**: hostname, automation token
-   id (username), token secret (password), port.
+   id (username), token secret (password), port. The port is `8443` by
+   default; use `443` if the panel admin has enabled the :443 opt-in
+   (**Server API Access → "Also serve the API on port 443"**) for hosts whose
+   outbound firewall blocks 8443.
 3. Map each product to a Jabali **package** id.
 4. Run the connection test.
 
